@@ -57,4 +57,36 @@ public interface SysRoleService {
      * @return 选中角色ID列表
      */
     List<Integer> selectRoleListByUserId(Long userId);
+
+    /**
+     * 根据角色id获取角色详细信息
+     *
+     * @param roleId 角色id
+     * @return 角色详细信息实体类
+     */
+    SysRole selectRoleById(Long roleId);
+
+    /**
+     * 角色状态修改
+     *
+     * @param role 角色实体类
+     * @return 执行结果
+     */
+    int updateRoleStatus(SysRole role);
+
+    /**
+     * 修改保存角色信息
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    int updateRole(SysRole role);
+
+    /**
+     * 修改数据权限信息
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    int authDataScope(SysRole role);
 }

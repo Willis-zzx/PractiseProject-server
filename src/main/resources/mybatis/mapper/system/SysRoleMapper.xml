@@ -112,4 +112,26 @@
                  left join sys_user u on u.user_id = ur.user_id
         where u.user_id = #{userId}
     </select>
+
+    <select id="selectRoleById" parameterType="Long" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"></include>
+        where r.role_id = #{roleId}
+    </select>
+
+    <update id="updateRole" parameterType="com.zzx.domain.entity.SysRole">
+        update sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
+            <if test="roleKey != null and roleKey != ''">role_key = #{roleKey},</if>
+            <if test="roleSort != null and roleSort != ''">role_sort = #{roleSort},</if>
+            <if test="dataScope != null and dataScope != ''">data_scope = #{dataScope},</if>
+            <if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
+            <if test="deptCheckStrictly != null">dept_check_strictly = #{deptCheckStrictly},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where role_id = #{roleId}
+    </update>
 </mapper>

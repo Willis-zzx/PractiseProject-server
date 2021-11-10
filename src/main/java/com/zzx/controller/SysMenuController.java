@@ -3,6 +3,7 @@ package com.zzx.controller;
 import com.zzx.domain.AjaxResult;
 import com.zzx.domain.BaseController;
 import com.zzx.domain.entity.SysMenu;
+import com.zzx.domain.entity.SysUser;
 import com.zzx.service.SysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,5 +52,20 @@ public class SysMenuController extends BaseController {
     @GetMapping(value = "/{menuId}")
     public AjaxResult getInfo(@PathVariable Long menuId) {
         return AjaxResult.success(menuService.selectMenuById(menuId));
+    }
+
+
+    /**
+     * 获取菜单下拉树列表
+     *
+     * @param menu 菜单实体类
+     * @return 封装信息集合
+     */
+    @GetMapping(value = "/menuTreeSelect")
+    public AjaxResult menuTreeSelect(SysMenu menu) {
+        SysUser sysUser = new SysUser();
+        sysUser.setUserId(1L);
+        List<SysMenu> menus = menuService.selectMenuList(menu, sysUser.getUserId());
+        return AjaxResult.success(menuService.buildMenuTreeSelect(menus));
     }
 }

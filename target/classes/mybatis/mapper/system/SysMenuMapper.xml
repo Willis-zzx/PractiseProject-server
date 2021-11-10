@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzx.ruoyi.mapper.SysMenuMapper">
+<mapper namespace="com.zzx.mapper.SysMenuMapper">
 
-    <resultMap type="com.zzx.ruoyi.domain.entity.SysMenu" id="SysMenuResult">
+    <resultMap type="com.zzx.domain.entity.SysMenu" id="SysMenuResult">
         <id property="menuId" column="menu_id"/>
         <result property="menuName" column="menu_name"/>
         <result property="parentName" column="parent_name"/>
@@ -46,7 +46,7 @@
         from sys_menu
     </sql>
 
-    <select id="selectMenuList" parameterType="com.zzx.ruoyi.domain.entity.SysMenu" resultMap="SysMenuResult">
+    <select id="selectMenuList" parameterType="com.zzx.domain.entity.SysMenu" resultMap="SysMenuResult">
         <include refid="selectMenuVo"/>
         <where>
             <if test="menuName != null and menuName != ''">

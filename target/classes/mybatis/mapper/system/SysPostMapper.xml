@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzx.ruoyi.mapper.SysPostMapper">
+<mapper namespace="com.zzx.mapper.SysPostMapper">
 
-    <resultMap type="com.zzx.ruoyi.domain.entity.SysPost" id="SysPostResult">
+    <resultMap type="com.zzx.domain.entity.SysPost" id="SysPostResult">
         <id property="postId" column="post_id"/>
         <result property="postCode" column="post_code"/>
         <result property="postName" column="post_name"/>

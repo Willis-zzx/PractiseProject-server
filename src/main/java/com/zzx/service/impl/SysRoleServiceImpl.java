@@ -95,4 +95,54 @@ public class SysRoleServiceImpl implements SysRoleService {
     public List<Integer> selectRoleListByUserId(Long userId) {
         return roleMapper.selectRoleListByUserId(userId);
     }
+
+    /**
+     * 根据角色id获取角色详细信息
+     *
+     * @param roleId 角色id
+     * @return 角色详细信息实体类
+     */
+    @Override
+    public SysRole selectRoleById(Long roleId) {
+        return roleMapper.selectRoleById(roleId);
+    }
+
+    /**
+     * 角色状态修改
+     *
+     * @param role 角色实体类
+     * @return 执行结果
+     */
+    @Override
+    public int updateRoleStatus(SysRole role) {
+        return roleMapper.updateRole(role);
+    }
+
+    /**
+     * 修改保存角色信息
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    public int updateRole(SysRole role) {
+        return roleMapper.updateRole(role);
+    }
+
+    /**
+     * 修改数据权限信息
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    public int authDataScope(SysRole role) {
+        // 修改角色信息
+        roleMapper.updateRole(role);
+        // 删除角色与部门关联
+        // roleDeptMapper.deleteRoleDeptByRoleId(role.getRoleId());
+        // 新增角色和部门信息（数据权限）
+        // return insertRoleDept(role);
+        return 0;
+    }
 }

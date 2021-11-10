@@ -29,7 +29,7 @@ public class Knife4jConfiguration {
                 .groupName("1.0版本")
                 .select()
                 // 这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.zzx.ruoyi.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.zzx.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

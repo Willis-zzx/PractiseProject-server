@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzx.ruoyi.mapper.SysDictDataMapper">
-    <resultMap type="com.zzx.ruoyi.domain.entity.SysDictData" id="SysDictDataResult">
+<mapper namespace="com.zzx.mapper.SysDictDataMapper">
+    <resultMap type="com.zzx.domain.entity.SysDictData" id="SysDictDataResult">
         <id property="dictCode" column="dict_code"/>
         <result property="dictSort" column="dict_sort"/>
         <result property="dictLabel" column="dict_label"/>
@@ -36,7 +36,7 @@
     </sql>
 
     <select id="selectDictDataByType" resultMap="SysDictDataResult"
-            parameterType="com.zzx.ruoyi.domain.entity.SysDictData">
+            parameterType="com.zzx.domain.entity.SysDictData">
         <include refid="selectDictDataVo"></include>
         where status = '0' and dict_type = #{dictType} order by dict_sort asc
     </select>

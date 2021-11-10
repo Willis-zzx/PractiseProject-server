@@ -5,11 +5,13 @@ import com.zzx.domain.entity.SysDictType;
 import com.zzx.mapper.SysDictDataMapper;
 import com.zzx.mapper.SysDictTypeMapper;
 import com.zzx.service.SysDictTypeService;
+import com.zzx.utils.DictUtils;
 import com.zzx.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 /**
@@ -55,12 +57,14 @@ public class SysDictTypeServiceImpl implements SysDictTypeService {
      */
     @Override
     public List<SysDictData> selectDictDataByType(String dictType) {
-        //后面加一个从redis查询
-        List<SysDictData> dictDataList = new ArrayList<>();
-        if (StringUtils.isNotEmpty(dictType)) {
-            dictDataList = dictDataMapper.selectDictDataByType(dictType);
-        }
+        //先从redis查询
+        List<SysDictData> dictDataList = DictUtils.getDictCache(dictType);
         if (StringUtils.isNotEmpty(dictDataList)) {
+            return dictDataList;
+        }
+        dictDataList = dictDataMapper.selectDictDataByType(dictType);
+        if (StringUtils.isNotEmpty(dictDataList)) {
+            DictUtils.setDictCache(dictType, dictDataList);
             return dictDataList;
         }
         return null;

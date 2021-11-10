@@ -63,8 +63,8 @@ public class SysUserController extends BaseController {
     /**
      * 通过id查询用户信息
      *
-     * @param userId
-     * @return
+     * @param userId 用户ID
+     * @return 用户信息集合信息
      */
     @GetMapping(value = {"/getUserById/{userId}", "getUserById"})
     public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId) {
