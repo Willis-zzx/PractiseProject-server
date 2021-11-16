@@ -38,7 +38,7 @@ public interface SysMenuService {
      * @param userId 用户ID
      * @return 权限列表
      */
-    public Set<String> selectMenuPermsByUserId(Long userId);
+     Set<String> selectMenuPermsByUserId(Long userId);
 
     /**
      * 根据用户ID查询菜单树信息

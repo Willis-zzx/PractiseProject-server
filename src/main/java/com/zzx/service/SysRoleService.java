@@ -3,6 +3,7 @@ package com.zzx.service;
 import com.zzx.domain.entity.SysRole;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zhouzixin
@@ -89,4 +90,12 @@ public interface SysRoleService {
      * @return 结果
      */
     int authDataScope(SysRole role);
+
+    /**
+     * 根据用户ID查询角色权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    Set<String> selectRolePermissionByUserId(Long userId);
 }

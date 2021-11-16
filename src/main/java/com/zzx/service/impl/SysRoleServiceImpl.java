@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zhouzixin
@@ -144,5 +145,16 @@ public class SysRoleServiceImpl implements SysRoleService {
         // 新增角色和部门信息（数据权限）
         // return insertRoleDept(role);
         return 0;
+    }
+
+    /**
+     * 根据用户ID查询角色权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    @Override
+    public Set<String> selectRolePermissionByUserId(Long userId) {
+        return null;
     }
 }

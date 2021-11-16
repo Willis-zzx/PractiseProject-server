@@ -99,4 +99,18 @@ public interface SysUserService {
      */
     int updateUserStatus(SysUser user);
 
+    /**
+     * 通过用户名查询用户
+     *
+     * @param userName 用户名
+     * @return 用户对象信息
+     */
+    SysUser selectUserByUserName(String userName);
+
+    /**
+     * 校验用户是否有数据权限
+     *
+     * @param userId 用户id
+     */
+    void checkUserDataScope(Long userId);
 }

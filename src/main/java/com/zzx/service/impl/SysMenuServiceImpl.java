@@ -13,10 +13,7 @@ import com.zzx.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +67,16 @@ public class SysMenuServiceImpl implements SysMenuService {
      */
     @Override
     public Set<String> selectMenuPermsByUserId(Long userId) {
-        return null;
+        List<String> perms = menuMapper.selectMenuPermsByUserId(userId);
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : perms)
+        {
+            if (StringUtils.isNotEmpty(perm))
+            {
+                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
+            }
+        }
+        return permsSet;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.zzx.utils;
+package com.zzx.redis;
 
 import java.util.Collection;
 import java.util.Iterator;

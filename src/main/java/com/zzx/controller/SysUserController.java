@@ -11,14 +11,18 @@ import com.zzx.domain.entity.SysUser;
 import com.zzx.service.SysPostService;
 import com.zzx.service.SysRoleService;
 import com.zzx.service.SysUserService;
+import com.zzx.utils.SecurityUtils;
 import com.zzx.utils.StringUtils;
 import io.swagger.annotations.Api;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.zzx.utils.SecurityUtils.getUsername;
 
 /**
  * 用户信息控制类
@@ -69,6 +73,7 @@ public class SysUserController extends BaseController {
     @GetMapping(value = {"/getUserById/{userId}", "getUserById"})
     public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         //检查用户是否有权限
+        userService.checkUserDataScope(userId);
         AjaxResult ajax = AjaxResult.success();
         List<SysRole> roles = roleService.selectRoleAll();
         ajax.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
@@ -97,6 +102,8 @@ public class SysUserController extends BaseController {
                 && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(sysUser))) {
             return AjaxResult.error("新增用户'" + sysUser.getUserName() + "'失败，邮箱账号已存在");
         }
+        sysUser.setCreateBy(getUsername());
+        sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
         return toAjax(userService.insertUser(sysUser));
     }
 
@@ -116,7 +123,7 @@ public class SysUserController extends BaseController {
                 && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
             return AjaxResult.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
-        //user.setUpdateBy(getUsername());
+        user.setUpdateBy(getUsername());
         return toAjax(userService.updateUser(user));
     }
 
@@ -157,9 +164,9 @@ public class SysUserController extends BaseController {
      */
     @PutMapping("/resetPwd")
     public AjaxResult resetPwd(@RequestBody SysUser user) {
-        //userService.checkUserAllowed(user);
-        //user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
-        //user.setUpdateBy(getUsername());
+        userService.checkUserAllowed(user);
+        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        user.setUpdateBy(getUsername());
         return toAjax(userService.resetPwd(user));
     }
 
@@ -172,7 +179,7 @@ public class SysUserController extends BaseController {
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody SysUser user) {
         userService.checkUserAllowed(user);
-        //user.setUpdateBy(getUsername());
+        user.setUpdateBy(getUsername());
         return toAjax(userService.updateUserStatus(user));
     }
 }

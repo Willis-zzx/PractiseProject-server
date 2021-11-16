@@ -2,6 +2,7 @@ package com.zzx.utils;
 
 import com.zzx.constant.Constants;
 import com.zzx.domain.entity.SysDictData;
+import com.zzx.redis.RedisCache;
 
 import java.util.Collection;
 import java.util.List;
