@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.zzx.utils.SecurityUtils.getUsername;
+
 /**
  * 角色信息控制类
  *
@@ -101,6 +103,7 @@ public class SysRoleController extends BaseController {
             return AjaxResult.error("修改角色' " + role.getRoleName() + " '失败，角色权限已存在！");
         }
         //设置更新者
+        role.setUpdateBy(getUsername());
         if (roleService.updateRole(role) > 0) {
             //更新缓存用户权限
             return AjaxResult.success();
