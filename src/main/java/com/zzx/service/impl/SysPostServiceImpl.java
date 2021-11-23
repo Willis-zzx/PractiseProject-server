@@ -1,8 +1,12 @@
 package com.zzx.service.impl;
 
+import com.zzx.constant.UserConstants;
+import com.zzx.exception.ServiceException;
 import com.zzx.mapper.SysPostMapper;
 import com.zzx.domain.entity.SysPost;
+import com.zzx.mapper.SysUserPostMapper;
 import com.zzx.service.SysPostService;
+import com.zzx.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,15 +23,18 @@ public class SysPostServiceImpl implements SysPostService {
     @Resource
     private SysPostMapper postMapper;
 
+    @Resource
+    private SysUserPostMapper userPostMapper;
+
     /**
      * 查询岗位信息集合
      *
      * @param post 岗位信息
-     * @return 岗位列表
+     * @return 岗位信息集合
      */
     @Override
     public List<SysPost> selectPostList(SysPost post) {
-        return null;
+        return postMapper.selectPostList(post);
     }
 
     /**
@@ -48,7 +55,7 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public SysPost selectPostById(Long postId) {
-        return null;
+        return postMapper.selectPostById(postId);
     }
 
     /**
@@ -59,29 +66,39 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public List<Integer> selectPostListByUserId(Long userId) {
-        return null;
+        return postMapper.selectPostListByUserId(userId);
     }
 
     /**
-     * 校验岗位名称
+     * 校验岗位名称是否唯一
      *
      * @param post 岗位信息
      * @return 结果
      */
     @Override
     public String checkPostNameUnique(SysPost post) {
-        return null;
+        Long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
+        SysPost info = postMapper.checkPostNameUnique(post.getPostName());
+        if (StringUtils.isNotNull(info) && info.getPostId().longValue() != postId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
-     * 校验岗位编码
+     * 校验岗位编码是否唯一
      *
      * @param post 岗位信息
      * @return 结果
      */
     @Override
     public String checkPostCodeUnique(SysPost post) {
-        return null;
+        Long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
+        SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
+        if (StringUtils.isNotNull(info) && info.getPostId().longValue() != postId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -92,7 +109,7 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int countUserPostById(Long postId) {
-        return 0;
+        return userPostMapper.countUserPostById(postId);
     }
 
     /**
@@ -103,7 +120,7 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int deletePostById(Long postId) {
-        return 0;
+        return postMapper.deletePostById(postId);
     }
 
     /**
@@ -115,7 +132,13 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int deletePostByIds(Long[] postIds) {
-        return 0;
+        for (Long postId : postIds) {
+            SysPost post = selectPostById(postId);
+            if (countUserPostById(postId) > 0) {
+                throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
+            }
+        }
+        return postMapper.deletePostByIds(postIds);
     }
 
     /**
@@ -126,7 +149,7 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int insertPost(SysPost post) {
-        return 0;
+        return postMapper.insertPost(post);
     }
 
     /**
@@ -137,6 +160,6 @@ public class SysPostServiceImpl implements SysPostService {
      */
     @Override
     public int updatePost(SysPost post) {
-        return 0;
+        return postMapper.updatePost(post);
     }
 }

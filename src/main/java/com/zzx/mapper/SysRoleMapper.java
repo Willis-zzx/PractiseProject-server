@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
+ * 角色表 数据层
+ *
  * @author zhouzixin
  * @version 1.0
  * @date 2021/10/11 20:47
@@ -14,20 +16,51 @@ import java.util.List;
 public interface SysRoleMapper {
 
     /**
-     * 查询角色列表
+     * 根据条件分页查询角色数据
      *
-     * @param sysRole 角色信息
-     * @return 角色信息集合信息
+     * @param role 角色信息
+     * @return 角色数据集合信息
      */
-    List<SysRole> selectRoleList(SysRole sysRole);
+    List<SysRole> selectRoleList(SysRole role);
 
     /**
-     * 增加一个角色
+     * 根据用户ID查询角色
      *
-     * @param sysRole 角色信息
-     * @return 是否新增成功
+     * @param userId 用户ID
+     * @return 角色列表
      */
-    int insertSysRole(SysRole sysRole);
+    List<SysRole> selectRolePermissionByUserId(Long userId);
+
+    /**
+     * 查询所有角色
+     *
+     * @return 角色列表
+     */
+    List<SysRole> selectRoleAll();
+
+    /**
+     * 根据用户ID获取角色选择框列表
+     *
+     * @param userId 用户ID
+     * @return 选中角色ID列表
+     */
+    List<Integer> selectRoleListByUserId(Long userId);
+
+    /**
+     * 通过角色ID查询角色
+     *
+     * @param roleId 角色ID
+     * @return 角色对象信息
+     */
+    SysRole selectRoleById(Long roleId);
+
+    /**
+     * 根据用户ID查询角色
+     *
+     * @param userName 用户名
+     * @return 角色列表
+     */
+    List<SysRole> selectRolesByUserName(String userName);
 
     /**
      * 校验角色名称是否唯一
@@ -46,34 +79,34 @@ public interface SysRoleMapper {
     SysRole checkRoleKeyUnique(String roleKey);
 
     /**
-     * 查询所有角色
+     * 修改角色信息
      *
-     * @return 角色列表
-     */
-    List<SysRole> selectRoleAll();
-
-    /**
-     * 根据用户ID获取角色选择框列表
-     *
-     * @param userId 用户ID
-     * @return 选中角色ID列表
-     */
-    List<Integer> selectRoleListByUserId(Long userId);
-
-
-    /**
-     * 根据角色id获取角色详细信息
-     *
-     * @param roleId 角色id
-     * @return 角色详细信息实体类
-     */
-    SysRole selectRoleById(Long roleId);
-
-    /**
-     * 角色状态修改
-     *
-     * @param role 角色实体类
-     * @return 执行结果
+     * @param role 角色信息
+     * @return 结果
      */
     int updateRole(SysRole role);
+
+    /**
+     * 新增角色信息
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    int insertRole(SysRole role);
+
+    /**
+     * 通过角色ID删除角色
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    int deleteRoleById(Long roleId);
+
+    /**
+     * 批量删除角色信息
+     *
+     * @param roleIds 需要删除的角色ID
+     * @return 结果
+     */
+    int deleteRoleByIds(Long[] roleIds);
 }
