@@ -3,7 +3,9 @@ package com.zzx.domain;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzx.constant.HttpStatus;
+import com.zzx.domain.model.LoginUser;
 import com.zzx.utils.DateUtils;
+import com.zzx.utils.SecurityUtils;
 import com.zzx.utils.SqlUtil;
 import com.zzx.utils.StringUtils;
 import org.slf4j.Logger;
@@ -132,32 +134,32 @@ public class BaseController {
         return StringUtils.format("redirect:{}", url);
     }
 
-//    /**
-//     * 获取用户缓存信息
-//     */
-//    public LoginUser getLoginUser() {
-//        return SecurityUtils.getLoginUser();
-//    }
-//
-//    /**
-//     * 获取登录用户id
-//     */
-//    public Long getUserId() {
-//        return getLoginUser().getUserId();
-//    }
-//
-//    /**
-//     * 获取登录部门id
-//     */
-//    public Long getDeptId() {
-//        return getLoginUser().getDeptId();
-//    }
-//
-//    /**
-//     * 获取登录用户名
-//     */
-//    public String getUsername() {
-//        return getLoginUser().getUsername();
-//    }
+    /**
+     * 获取用户缓存信息
+     */
+    public LoginUser getLoginUser() {
+        return SecurityUtils.getLoginUser();
+    }
+
+    /**
+     * 获取登录用户id
+     */
+    public Long getUserId() {
+        return getLoginUser().getUserId();
+    }
+
+    /**
+     * 获取登录部门id
+     */
+    public Long getDeptId() {
+        return getLoginUser().getDeptId();
+    }
+
+    /**
+     * 获取登录用户名
+     */
+    public String getUsername() {
+        return getLoginUser().getUsername();
+    }
 
 }

@@ -2,9 +2,9 @@ package com.zzx.controller;
 
 
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
-import com.zzx.domain.BaseController;
 import com.zzx.constant.UserConstants;
 import com.zzx.domain.AjaxResult;
+import com.zzx.domain.BaseController;
 import com.zzx.domain.TableDataInfo;
 import com.zzx.domain.entity.SysRole;
 import com.zzx.domain.entity.SysUser;
@@ -18,11 +18,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.zzx.utils.SecurityUtils.getUsername;
 
 /**
  * 用户信息控制类
@@ -50,29 +49,48 @@ public class SysUserController extends BaseController {
         this.postService = postService;
     }
 
+
     /**
-     * 查询所有用户资料
-     *
-     * @param sysUser 用户信息
-     * @return 用户信息集合信息
+     * 获取用户列表
      */
     @GetMapping("/list")
-    public TableDataInfo list(SysUser sysUser) {
+    public TableDataInfo list(SysUser user) {
         startPage();
-        List<SysUser> list = userService.selectUserList(sysUser);
+        List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
 
+    @GetMapping("/export")
+    public AjaxResult export(SysUser user) {
+        List<SysUser> list = userService.selectUserList(user);
+        //ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+        //return util.exportExcel(list, "用户数据");
+        return null;
+    }
+
+
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
+        //ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+        // List<SysUser> userList = util.importExcel(file.getInputStream());
+        //String operName = getUsername();
+        //String message = userService.importUser(userList, updateSupport, operName);
+        //return AjaxResult.success(message);
+        return null;
+    }
+
+    @GetMapping("/importTemplate")
+    public AjaxResult importTemplate() {
+        //ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+        //return util.importTemplateExcel("用户数据");
+        return null;
+    }
 
     /**
-     * 通过id查询用户信息
-     *
-     * @param userId 用户ID
-     * @return 用户信息集合信息
+     * 根据用户编号获取详细信息
      */
-    @GetMapping(value = {"/getUserById/{userId}", "getUserById"})
+    @GetMapping(value = {"/", "/{userId}"})
     public AjaxResult getInfo(@PathVariable(value = "userId", required = false) Long userId) {
-        //检查用户是否有权限
         userService.checkUserDataScope(userId);
         AjaxResult ajax = AjaxResult.success();
         List<SysRole> roles = roleService.selectRoleAll();
@@ -88,32 +106,27 @@ public class SysUserController extends BaseController {
 
     /**
      * 新增用户
-     *
-     * @param sysUser 用户信息
-     * @return 新增结果信息
      */
-    @PostMapping("/add")
-    public AjaxResult add(@Validated @RequestBody SysUser sysUser) {
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(sysUser.getUserName()))) {
-            return AjaxResult.error("新增用户'" + sysUser.getUserName() + "'失败，登录账号已存在");
-        } else if (StringUtils.isNotEmpty(sysUser.getPhoneNumber()) && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(sysUser))) {
-            return AjaxResult.error("新增用户'" + sysUser.getUserName() + "'失败，手机号码已存在");
-        } else if (StringUtils.isNotEmpty(sysUser.getEmail())
-                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(sysUser))) {
-            return AjaxResult.error("新增用户'" + sysUser.getUserName() + "'失败，邮箱账号已存在");
+    @PostMapping
+    public AjaxResult add(@Validated @RequestBody SysUser user) {
+        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user.getUserName()))) {
+            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+        } else if (StringUtils.isNotEmpty(user.getPhoneNumber())
+                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+        } else if (StringUtils.isNotEmpty(user.getEmail())
+                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
+            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
-        sysUser.setCreateBy(getUsername());
-        sysUser.setPassword(SecurityUtils.encryptPassword(sysUser.getPassword()));
-        return toAjax(userService.insertUser(sysUser));
+        user.setCreateBy(getUsername());
+        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        return toAjax(userService.insertUser(user));
     }
 
     /**
-     * 修改用户信息
-     *
-     * @param user 用户信息
-     * @return 修改结果信息
+     * 修改用户
      */
-    @PostMapping("/edit")
+    @PutMapping
     public AjaxResult edit(@Validated @RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         if (StringUtils.isNotEmpty(user.getPhoneNumber())
@@ -129,38 +142,17 @@ public class SysUserController extends BaseController {
 
     /**
      * 删除用户
-     *
-     * @param userIds 用户id集合
-     * @return 删除结果信息
      */
     @DeleteMapping("/{userIds}")
     public AjaxResult remove(@PathVariable Long[] userIds) {
-//        if (ArrayUtils.contains(userIds, getUserId()))
-//        {
-//            return error("当前用户不能删除");
-//        }
+        if (ArrayUtils.contains(userIds, getUserId())) {
+            return error("当前用户不能删除");
+        }
         return toAjax(userService.deleteUserByIds(userIds));
     }
 
     /**
-     * 导出用户数据
-     *
-     * @param user
-     * @return
-     */
-    @GetMapping("/export")
-    public AjaxResult export(SysUser user) {
-        List<SysUser> list = userService.selectUserList(user);
-        // ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
-        // return util.exportExcel(list, "用户数据");
-        return null;
-    }
-
-    /**
      * 重置密码
-     *
-     * @param user
-     * @return
      */
     @PutMapping("/resetPwd")
     public AjaxResult resetPwd(@RequestBody SysUser user) {
@@ -171,15 +163,34 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 用户状态修改
-     *
-     * @param user
-     * @return
+     * 状态修改
      */
     @PutMapping("/changeStatus")
     public AjaxResult changeStatus(@RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         user.setUpdateBy(getUsername());
         return toAjax(userService.updateUserStatus(user));
+    }
+
+    /**
+     * 根据用户编号获取授权角色
+     */
+    @GetMapping("/authRole/{userId}")
+    public AjaxResult authRole(@PathVariable("userId") Long userId) {
+        AjaxResult ajax = AjaxResult.success();
+        SysUser user = userService.selectUserById(userId);
+        List<SysRole> roles = roleService.selectRolesByUserId(userId);
+        ajax.put("user", user);
+        ajax.put("roles", SysUser.isAdmin(userId) ? roles : roles.stream().filter(r -> !r.isAdmin()).collect(Collectors.toList()));
+        return ajax;
+    }
+
+    /**
+     * 用户授权角色
+     */
+    @PutMapping("/authRole")
+    public AjaxResult insertAuthRole(Long userId, Long[] roleIds) {
+        userService.insertUserAuth(userId, roleIds);
+        return success();
     }
 }
